@@ -17,13 +17,14 @@ bot.on('ready',() => {
 bot.on("message", function (user, userID, channelID, message, evt){
     if(message.substring(0,1) == '!'){
         switch(message.substring(1)){
+
             case("help"):
                 fs.readFile('help.txt', function(err,data){
                     console.log(err);
                     bot.sendMessage({to:channelID, message:data});
-                    console.log(data);
                 });
                 break;
+
             case("init"):
                 solitarieChannel = channelID;
                 bot.getMessages({channelID:channelID,limit:100},function (err,messageArray){       
@@ -37,7 +38,7 @@ bot.on("message", function (user, userID, channelID, message, evt){
 
             case("set"):
                 utilityChannel = channelID;
-            //    message.react(":ok:");
+            //    message.react(':ok:');
                 break;
             
             case("print"):
@@ -45,7 +46,7 @@ bot.on("message", function (user, userID, channelID, message, evt){
                 break;
 
             case("clear"):
-                if(channelID == solitarieChannel){
+                if(channelID == utilityChannel){
                     console.log("clearing");
                     bot.getMessages({channelID:channelID,limit:100},function (err,messageArray){      
                         var deleteArr = []; 

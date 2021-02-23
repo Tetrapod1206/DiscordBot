@@ -34,23 +34,25 @@ bot.on("message", function (user, userID, channelID, message, evt){
                 bot.sendMessage({to: channelID, message:hist});
                 break;
             /*    
-            This feature is abandon since there is a rate limit of deleting message by bot
+            This feature is abandon since there is a rate limit of deleting message by bot*/
             case("clear"):
                 if(channelID == solitarieChannel){
                     console.log("clearing");
-                    bot.getMessages({channelID:channelID,limit:100},function (err,messageArray){       
+                    bot.getMessages({channelID:channelID,limit:100},function (err,messageArray){      
+                        var deleteArr = []; 
                         for (var msg of messageArray){
                             if(!(msg.content.substring(1) == "…"||msg.content.substring(1) == "...")){
-                                setTimeout(function(){
-                                    bot.deleteMessage({channelID:channelID,messageID:msg.id},function (err){
-                                        console.log(err);
-                                    });
-                                },6000 );
+                                deleteArr.push(msg.id);
+                                console.log(deleteArr);
                             }
                         }
+                        bot.deleteMessages({channelID : channelID, messageIDs : deleteArr},function (err,resp){
+                            console.log(err);
+                            console.log(resp);
+                        });
                     });
                 }
-                break;*/
+                break;
 
             default :
                 bot.sendMessage({to: channelID, message:"Wrong channel"});

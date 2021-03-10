@@ -1,33 +1,34 @@
-var Discord = require('discord.io');
-var logger = require('winston');
-var auth = require('./auth.json');
+var Discord = require('discord.js');
 var fs = require('fs');
 var hist = "";
 var solitarieChannel;
 var utilityCaneel;
 
-var bot = new Discord.Client({
-    token:auth.token,autorun:true
+const { token } = require('./auth.json');
+const client = new Discord.Client();
+
+client.login(token);
+
+client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
 });
 
-bot.on('ready',() => {
-    console.log('Logging in as ${bot.user.tag}!');
-});
 
-bot.on("message", function (user, userID, channelID, message, evt){
+client.on("message", msg => {
+    message = msg.content;
     if(message.substring(0,1) == '!'){
         switch(message.substring(1)){
 
             case("help"):
                 fs.readFile('help.txt', function(err,data){
-                    console.log(err);
-                    bot.sendMessage({to:channelID, message:data});
+                    console.log(typeof data);
+                    msg.reply(data.toString());
                 });
                 break;
 
             case("init"):
                 solitarieChannel = channelID;
-                bot.getMessages({channelID:channelID,limit:100},function (err,messageArray){       
+                client.getMessages({channelID:channelID,limit:100},function (err,messageArray){       
                     for (var msg of messageArray){
                         if(msg.content.substring(1) == "…"||msg.content.substring(1) == "..."){
                             hist = [msg.content.substring(0,1),hist].join('');
@@ -42,13 +43,13 @@ bot.on("message", function (user, userID, channelID, message, evt){
                 break;
             
             case("print"):
-                bot.sendMessage({to: channelID, message:hist});
+                client.sendMessage({to: channelID, message:hist});
                 break;
 
             case("clear"):
                 if(channelID == utilityChannel){
                     console.log("clearing");
-                    bot.getMessages({channelID:channelID,limit:100},function (err,messageArray){      
+                    client.getMessages({channelID:channelID,limit:100},function (err,messageArray){      
                         var deleteArr = []; 
                         for (var msg of messageArray){
                             if(!(msg.content.substring(1) == "…"||msg.content.substring(1) == "...")){
@@ -56,7 +57,7 @@ bot.on("message", function (user, userID, channelID, message, evt){
                                 console.log(deleteArr);
                             }
                         }
-                        bot.deleteMessages({channelID : channelID, messageIDs : deleteArr},function (err,resp){
+                        client.deleteMessages({channelID : channelID, messageIDs : deleteArr},function (err,resp){
                             console.log(err);
                             console.log(resp);
                         });

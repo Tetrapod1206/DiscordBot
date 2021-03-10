@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/Tetrapod1206/DiscordBot#readme",
   "dependencies": {
-    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^12.5.1",
+    "fs": "0.0.1-security",
     "winston": "^3.3.3"
   }
 }
